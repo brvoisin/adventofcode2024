@@ -21,7 +21,7 @@ def main() -> None:
     if args.puzzle == "puzzle1":
         puzzle = safe_report_count
     else:
-        raise NotImplementedError()
+        puzzle = safe_report_count_with_problem_dampener
     print(puzzle(parse(sys.stdin.readlines())))
 
 
@@ -43,6 +43,19 @@ def is_safe(report: Report) -> bool:
         if not 1 <= abs(level - report[i - 1]) <= 3:
             return False
     return True
+
+
+def safe_report_count_with_problem_dampener(reports: Iterable[Report]) -> int:
+    return sum(1 for report in reports if is_safe_with_problem_dampener(report))
+
+
+def is_safe_with_problem_dampener(report: Report) -> bool:
+    if is_safe(report):
+        return True
+    for i in range(len(report)):
+        if is_safe(report[:i] + report[i + 1 :]):
+            return True
+    return False
 
 
 if __name__ == "__main__":
