@@ -4,26 +4,47 @@
 // Let's switch from Python to Go!
 //
 // Usage:
-//   go run day4.go < input
+//   go run day4.go part1 < input
+//   go run day4.go part2 < input
 
 package main
 
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
 
-const word = "XMAS"
-const reverseWord = "SAMX"
+const (
+	word        = "XMAS"
+	reverseWord = "SAMX"
+	mas         = "MAS"
+	sam         = "SAM"
+)
+const (
+	part1 = "part1"
+	part2 = "part2"
+)
 
 func main() {
-	fmt.Println(CountAllWords(ReadLines(os.Stdin)))
+	part := os.Args[1]
+	var exerice func([]string) int
+	switch part {
+	case part1:
+		exerice = CountAllWords
+	case part2:
+		exerice = CountAllXMAS
+	default:
+		fmt.Fprintf(os.Stderr, "part argument must be %s or %s\n", part1, part2)
+		os.Exit(1)
+	}
+	fmt.Println(exerice(ReadLines(os.Stdin)))
 }
 
-func ReadLines(file *os.File) (lines []string) {
-	scanner := bufio.NewScanner(file)
+func ReadLines(r io.Reader) (lines []string) {
+	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
@@ -85,4 +106,20 @@ func Diagonal2ToLines(input []string) []string {
 		}
 	}
 	return result
+}
+
+func CountAllXMAS(input []string) (count int) {
+	// Assuming input is not empty and all lines have the same length.
+	width := len(input[0])
+	height := len(input)
+	for x := 1; x < width-1; x++ {
+		for y := 1; y < height-1; y++ {
+			word1 := string(input[x-1][y-1]) + string(input[x][y]) + string(input[x+1][y+1])
+			word2 := string(input[x-1][y+1]) + string(input[x][y]) + string(input[x+1][y-1])
+			if (word1 == mas || word1 == sam) && (word2 == mas || word2 == sam) {
+				count++
+			}
+		}
+	}
+	return
 }

@@ -1,8 +1,3 @@
-// Advent of code 2024
-// Day 4: Ceres Search
-// https://adventofcode.com/2024/day/4
-// Let's switch from Python to Go!
-
 package main
 
 import (
@@ -70,24 +65,35 @@ func TestDiagonal2ToLines(t *testing.T) {
 	}
 }
 
+var sample = []string{
+	"MMMSXXMASM",
+	"MSAMXMSMSA",
+	"AMXSXMAAMM",
+	"MSAMASMSMX",
+	"XMASAMXAMM",
+	"XXAMMXXAMA",
+	"SMSMSASXSS",
+	"SAXAMASAAA",
+	"MAMMMXMMMM",
+	"MXMXAXMASX",
+}
+
 func TestCountAllWords(t *testing.T) {
-	sample := []string{
-		"MMMSXXMASM",
-		"MSAMXMSMSA",
-		"AMXSXMAAMM",
-		"MSAMASMSMX",
-		"XMASAMXAMM",
-		"XXAMMXXAMA",
-		"SMSMSASXSS",
-		"SAXAMASAAA",
-		"MAMMMXMMMM",
-		"MXMXAXMASX",
-	}
 	want := 18
 
 	got := CountAllWords(sample)
 
 	if got != want {
 		t.Errorf("CountAllWords() = %v, want %v", got, want)
+	}
+}
+
+func TestCountAllXMAS(t *testing.T) {
+	want := 9
+
+	got := CountAllXMAS(sample)
+
+	if got != want {
+		t.Errorf("CountAllXMAS() = %v, want %v", got, want)
 	}
 }
