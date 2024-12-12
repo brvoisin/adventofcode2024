@@ -34,7 +34,7 @@ func main() {
 	case part1:
 		exerice = SumOfMiddlePageNumberOfCorrectlyOrderedUpdates
 	case part2:
-		panic("not implemented")
+		exerice = SumOfMiddlePageNumberOfIncorrectlyOrderedUpdates
 	default:
 		fmt.Fprintf(os.Stderr, "part argument must be %s or %s\n", part1, part2)
 		os.Exit(1)
@@ -102,7 +102,11 @@ func parseUpdates(scanner *bufio.Scanner) ([]Update, error) {
 }
 
 func SumOfMiddlePageNumberOfCorrectlyOrderedUpdates(input Input) (result int) {
-	for _, update := range getCorrectlyOrderedUpdates(input) {
+	return sumOfMiddlePageNumber(getCorrectlyOrderedUpdates(input))
+}
+
+func sumOfMiddlePageNumber(updates []Update) (result int) {
+	for _, update := range updates {
 		result += update[len(update)/2]
 	}
 	return
@@ -129,4 +133,41 @@ func isCorrectlyOrdered(rules []PageOrderingRule, update Update) bool {
 		}
 	}
 	return true
+}
+
+func SumOfMiddlePageNumberOfIncorrectlyOrderedUpdates(input Input) (result int) {
+	return sumOfMiddlePageNumber(putAllUpdatesInTheRightOrder(input.Rules, getIncorrectlyOrderedUpdates(input)))
+}
+
+func getIncorrectlyOrderedUpdates(input Input) (result []Update) {
+	for _, update := range input.Updates {
+		if !isCorrectlyOrdered(input.Rules, update) {
+			result = append(result, update)
+		}
+	}
+	return
+}
+
+func putAllUpdatesInTheRightOrder(rules []PageOrderingRule, updates []Update) []Update {
+	var result = make([]Update, len(updates))
+	for i, update := range updates {
+		result[i] = putUpdateInTheRightOrder(rules, update)
+	}
+	return result
+}
+
+func putUpdateInTheRightOrder(rules []PageOrderingRule, update Update) Update {
+	result := slices.Clone(update)
+	slices.SortFunc(result, func(i, j int) int {
+		for _, rule := range rules {
+			if i == rule.Before && j == rule.After {
+				return -1
+			}
+			if i == rule.After && j == rule.Before {
+				return 1
+			}
+		}
+		return 0
+	})
+	return result
 }

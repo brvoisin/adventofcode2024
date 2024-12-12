@@ -128,3 +128,57 @@ func TestSumOfMiddlePageNumberOfCorrectlyOrderedUpdates(t *testing.T) {
 		t.Errorf("SumOfMiddlePageNumberOfCorrectlyOrderedUpdates() = %v, want %v", got, want)
 	}
 }
+
+func TestPutUpdateInTheRightOrder(t *testing.T) {
+	type args struct {
+		rules  []PageOrderingRule
+		update Update
+	}
+	tests := []struct {
+		name string
+		args args
+		want Update
+	}{
+		{
+			name: "Example 1: 75,97,47,61,53",
+			args: args{
+				rules:  sampleRules,
+				update: sampleUpdates[3],
+			},
+			want: Update{97, 75, 47, 61, 53},
+		},
+		{
+			name: "Example 2: 61,13,29",
+			args: args{
+				rules:  sampleRules,
+				update: sampleUpdates[4],
+			},
+			want: Update{61, 29, 13},
+		},
+		{
+			name: "Example 3: 97,13,75,29,47",
+			args: args{
+				rules:  sampleRules,
+				update: sampleUpdates[5],
+			},
+			want: Update{97, 75, 47, 29, 13},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := putUpdateInTheRightOrder(tt.args.rules, tt.args.update); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("putUpdateInTheRightOrder() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSumOdMiddlePageNumberOfIncorrectlyOrderedUpdates(t *testing.T) {
+	want := 123
+
+	got := SumOfMiddlePageNumberOfIncorrectlyOrderedUpdates(sampleInput)
+
+	if got != want {
+		t.Errorf("SumOfMiddlePageNumberOfIncorrectlyOrderedUpdates() = %v, want %v", got, want)
+	}
+}
